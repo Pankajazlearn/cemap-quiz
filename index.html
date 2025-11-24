@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEMAP Mock Exams Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-bar {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid #667eea;
+        }
+
+        .user-details {
+            text-align: left;
+        }
+
+        .user-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .user-email {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .signout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .signout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 20px;
+            opacity: 0.95;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 30px;
+        }
+
+        .card h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-screen.hidden {
+            display: none;
+        }
+
+        .spinner {
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .header-bar {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container" id="mainContent" style="display: none;">
+        <!-- User Header Bar -->
+        <div class="header-bar">
+            <div class="user-section">
+                <img id="userAvatar" class="user-avatar" src="" alt="User">
+                <div class="user-details">
+                    <div class="user-name" id="userName">Loading...</div>
+                    <div class="user-email" id="userEmail"></div>
+                </div>
+            </div>
+            <button class="signout-btn" onclick="signOut()">Sign Out</button>
+        </div>
+
+        <div class="header">
+            <h1>📚 CEMAP Mock Exams Hub</h1>
+            <p>Your Complete Preparation Resource</p>
+        </div>
+
+        <div class="cards-grid">
+            <a href="cemap-1-mock-exam.html" class="card">
+                <div class="card-icon">📝</div>
+                <h2>CEMAP 1 Mock Exam</h2>
+                <p>UK Financial Services, Regulation & Ethics - Test your knowledge with 50 comprehensive multiple choice questions.</p>
+                <div class="card-meta">
+                    <span class="meta-item">⏱️ 120 minutes</span>
+                    <span class="meta-item">❓ 50 questions</span>
+                    <span class="meta-item">✅ 70% pass</span>
+                </div>
+                <span class="btn">Start Exam</span>
+            </a>
+
+            <a href="cemap-1-financial-planning-exam.html" class="card">
+                <div class="card-icon">🎯</div>
+                <h2>CEMAP 1 - Financial Planning</h2>
+                <p>Latest 2024/25 topics including Consumer Duty, ESG, Technology, and Modern Financial Planning.</p>
+                <div class="card-meta">
+                    <span class="meta-item">⏱️ 90 minutes</span>
+                    <span class="meta-item">❓ 40 questions</span>
+                    <span class="meta-item">✅ 70% pass</span>
+                </div>
+                <span class="btn">Start Exam</span>
+            </a>
+
+            <a href="#" class="card" onclick="alert('Coming soon!'); return false;">
+                <div class="card-icon">📊</div>
+                <h2>CEMAP 2 Mock Exam</h2>
+                <p>Protection, Savings & Investment Products - Comprehensive coverage of all key topics.</p>
+                <div class="card-meta">
+                    <span class="meta-item">⏱️ 120 minutes</span>
+                    <span class="meta-item">❓ 50 questions</span>
+                    <span class="meta-item">✅ 70% pass</span>
+                </div>
+                <span class="btn">Coming Soon</span>
+            </a>
+
+            <a href="#" class="card" onclick="alert('Coming soon!'); return false;">
+                <div class="card-icon">💼</div>
+                <h2>CEMAP 3 Mock Exam</h2>
+                <p>Financial Planning & Advice - Master the art of financial advice and planning.</p>
+                <div class="card-meta">
+                    <span class="meta-item">⏱️ 150 minutes</span>
+                    <span class="meta-item">❓ Case studies</span>
+                    <span class="meta-item">✅ 70% pass</span>
+                </div>
+                <span class="btn">Coming Soon</span>
+            </a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getAuth, 
+            onAuthStateChanged,
+            signOut as firebaseSignOut
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // TODO: Replace with your Firebase config (same as login page)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        let auth;
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+
+            // Check authentication status
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // User is signed in
+                    showMainContent(user);
+                } else {
+                    // No user signed in - redirect to login
+                    window.location.href = 'login.html';
+                }
+            });
+        } catch (error) {
+            console.error("Firebase error:", error);
+            // If Firebase not configured, still show content (for testing)
+            checkLocalAuth();
+        }
+
+        function showMainContent(user) {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('mainContent').style.display = 'block';
+            
+            document.getElementById('userAvatar').src = user.photoURL || 'https://via.placeholder.com/50';
+            document.getElementById('userName').textContent = user.displayName || 'User';
+            document.getElementById('userEmail').textContent = user.email;
+        }
+
+        function checkLocalAuth() {
+            // Fallback: check localStorage
+            const userData = localStorage.getItem('cemapUser');
+            if (userData) {
+                const user = JSON.parse(userData);
+                // Check if session is less than 24 hours old
+                if (Date.now() - user.timestamp < 24 * 60 * 60 * 1000) {
+                    showMainContent(user);
+                    return;
+                }
+            }
+            // No valid session - redirect to login
+            window.location.href = 'login.html';
+        }
+
+        window.signOut = async function() {
+            try {
+                if (auth) {
+                    await firebaseSignOut(auth);
+                }
+                localStorage.removeItem('cemapUser');
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error("Sign out error:", error);
+                alert("Failed to sign out. Please try again.");
+            }
+        };
+    </script>
+</body>
+</html>
