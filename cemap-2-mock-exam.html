@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CeMAP 1 Mock Exam - Practice Test</title>
+    <meta name="description" content="Free CeMAP 1 mock exam with 50 randomized questions. Practice for your Certificate in Mortgage Advice and Practice exam.">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+        .container {
+            padding: 20px;
+        }
+        @media (max-width: 640px) {
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        // Lucide Icons as SVG components
+        const CheckCircle = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        );
+        
+        const XCircle = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        );
+        
+        const RotateCcw = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+        );
+        
+        const Clock = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        );
+        
+        const Award = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+            </svg>
+        );
+        
+        const Shuffle = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+        );
+
+        const allQuestions = [
+            {
+                id: 1,
+                question: "What is the primary objective of the Financial Conduct Authority (FCA)?",
+                options: [
+                    "To protect consumers and enhance market integrity",
+                    "To maximize bank profits",
+                    "To set interest rates",
+                    "To manage government debt"
+                ],
+                correct: 0,
+                explanation: "The FCA's strategic objective is to ensure that relevant markets function well, with operational objectives including consumer protection, protecting financial markets, and promoting competition."
+            },
+            {
+                id: 2,
+                question: "What does the Prudential Regulation Authority (PRA) primarily regulate?",
+                options: [
+                    "All financial services firms",
+                    "Banks, building societies, credit unions, insurers, and major investment firms",
+                    "Only mortgage brokers",
+                    "Only insurance companies"
+                ],
+                correct: 1,
+                explanation: "The PRA is responsible for the prudential regulation and supervision of banks, building societies, credit unions, insurers, and major investment firms."
+            },
+            {
+                id: 3,
+                question: "Which body is responsible for setting monetary policy in the UK?",
+                options: [
+                    "FCA",
+                    "PRA",
+                    "Bank of England's Monetary Policy Committee",
+                    "HM Treasury"
+                ],
+                correct: 2,
+                explanation: "The Bank of England's Monetary Policy Committee (MPC) sets monetary policy to meet the government's inflation target."
+            },
+            {
+                id: 4,
+                question: "What is the maximum compensation available from the Financial Services Compensation Scheme (FSCS) for deposits?",
+                options: [
+                    "£50,000 per person per firm",
+                    "£75,000 per person per firm",
+                    "£85,000 per person per firm",
+                    "£100,000 per person per firm"
+                ],
+                correct: 2,
+                explanation: "The FSCS protects deposits up to £85,000 per person per authorized firm."
+            },
+            {
+                id: 5,
+                question: "What is the main purpose of the Consumer Duty introduced by the FCA?",
+                options: [
+                    "To increase firm profits",
+                    "To set higher standards requiring firms to put customers' needs first",
+                    "To reduce regulation",
+                    "To eliminate all complaints"
+                ],
+                correct: 1,
+                explanation: "The Consumer Duty requires firms to deliver good outcomes for retail customers and act in good faith."
+            },
+            {
+                id: 6,
+                question: "Which principle requires firms to 'pay due regard to the interests of customers and treat them fairly'?",
+                options: [
+                    "Principle 1",
+                    "Principle 6",
+                    "Principle 8",
+                    "Principle 11"
+                ],
+                correct: 1,
+                explanation: "Principle 6 states firms must pay due regard to the interests of customers and treat them fairly (Treating Customers Fairly - TCF)."
+            },
+            {
+                id: 7,
+                question: "What does KYC stand for in financial services?",
+                options: [
+                    "Know Your Client",
+                    "Keep Your Cash",
+                    "Know Your Compliance",
+                    "Keep Your Customers"
+                ],
+                correct: 0,
+                explanation: "Know Your Client/Customer - due diligence requirements to verify customer identity and understand their circumstances."
+            },
+            {
+                id: 8,
+                question: "What is the primary purpose of the Financial Ombudsman Service (FOS)?",
+                options: [
+                    "To prosecute financial criminals",
+                    "To resolve disputes between consumers and financial firms",
+                    "To set interest rates",
+                    "To approve new products"
+                ],
+                correct: 1,
+                explanation: "The FOS provides an independent dispute resolution service for complaints about financial services."
+            },
+            {
+                id: 9,
+                question: "What are the three stages of money laundering?",
+                options: [
+                    "Placement, layering, integration",
+                    "Detection, prevention, prosecution",
+                    "Planning, execution, completion",
+                    "Investigation, charging, conviction"
+                ],
+                correct: 0,
+                explanation: "Money laundering involves placement (introducing illicit funds), layering (obscuring the trail), and integration (legitimizing the funds)."
+            },
+            {
+                id: 10,
+                question: "What must a firm do if it knows or suspects money laundering?",
+                options: [
+                    "Ignore it",
+                    "Tell the customer",
+                    "Submit a Suspicious Activity Report (SAR) to the National Crime Agency",
+                    "Close the account immediately without reporting"
+                ],
+                correct: 2,
+                explanation: "Firms must report suspicious activity to the National Crime Agency via a SAR."
+            },
+            {
+                id: 11,
+                question: "What does 'tipping off' mean in anti-money laundering context?",
+                options: [
+                    "Providing good customer service",
+                    "Informing someone that they are under suspicion or investigation",
+                    "Reporting suspicious activity",
+                    "Training staff"
+                ],
+                correct: 1,
+                explanation: "Tipping off is illegally disclosing information that might prejudice an investigation."
+            },
+            {
+                id: 12,
+                question: "What is the main difference between a current account and a savings account?",
+                options: [
+                    "No difference",
+                    "Current accounts are for day-to-day transactions; savings accounts are for accumulating interest",
+                    "Savings accounts have no interest",
+                    "Current accounts always have higher interest rates"
+                ],
+                correct: 1,
+                explanation: "Current accounts facilitate regular transactions, while savings accounts are designed to accumulate interest on deposited funds."
+            },
+            {
+                id: 13,
+                question: "What is an overdraft?",
+                options: [
+                    "A type of savings account",
+                    "A loan facility allowing you to withdraw more money than you have in your account",
+                    "An investment product",
+                    "A type of insurance"
+                ],
+                correct: 1,
+                explanation: "An overdraft allows account holders to borrow money up to an agreed limit by withdrawing more than their balance."
+            },
+            {
+                id: 14,
+                question: "What does 'APR' stand for?",
+                options: [
+                    "Annual Percentage Rate",
+                    "Average Payment Return",
+                    "Annual Product Rate",
+                    "Applied Profit Rate"
+                ],
+                correct: 0,
+                explanation: "Annual Percentage Rate shows the total cost of borrowing per year, including interest and fees."
+            },
+            {
+                id: 15,
+                question: "What is 'AER' in relation to savings accounts?",
+                options: [
+                    "Annual Equivalent Rate - shows interest with compounding",
+                    "Average Earning Rate",
+                    "Annual Extra Return",
+                    "Applied Exchange Rate"
+                ],
+                correct: 0,
+                explanation: "AER shows what the interest rate would be if interest was paid and compounded annually."
+            },
+            {
+                id: 16,
+                question: "What is an ISA?",
+                options: [
+                    "Individual Savings Account - a tax-efficient savings/investment wrapper",
+                    "International Savings Account",
+                    "Insurance Savings Account",
+                    "Instant Savings Account"
+                ],
+                correct: 0,
+                explanation: "ISAs allow individuals to save or invest up to an annual limit without paying tax on returns."
+            },
+            {
+                id: 17,
+                question: "What is the annual ISA allowance for the 2024/25 tax year?",
+                options: [
+                    "£15,000",
+                    "£20,000",
+                    "£25,000",
+                    "£30,000"
+                ],
+                correct: 1,
+                explanation: "The annual ISA allowance is £20,000 (subject to government changes)."
+            },
+            {
+                id: 18,
+                question: "Can you open more than one Cash ISA in the same tax year?",
+                options: [
+                    "Yes, unlimited",
+                    "No, only one Cash ISA per tax year (though you can pay into one previously opened)",
+                    "Yes, up to five",
+                    "Only if they're with different providers"
+                ],
+                correct: 1,
+                explanation: "You can only open and pay into one Cash ISA per tax year, though you can transfer previous years' ISAs."
+            },
+            {
+                id: 19,
+                question: "What is a Lifetime ISA (LISA)?",
+                options: [
+                    "An ISA for over 60s only",
+                    "An ISA for 18-39 year-olds to save for first home or retirement, with 25% government bonus",
+                    "An ISA with life insurance",
+                    "An ISA that lasts your entire life"
+                ],
+                correct: 1,
+                explanation: "LISAs offer a 25% government bonus on contributions up to £4,000 annually, for first-time buyers or retirement."
+            },
+            {
+                id: 20,
+                question: "What is a unit trust?",
+                options: [
+                    "A type of bank account",
+                    "A collective investment scheme pooling money from multiple investors",
+                    "A type of loan",
+                    "A government bond"
+                ],
+                correct: 1,
+                explanation: "Unit trusts pool investors' money to invest in a diversified portfolio of assets, managed by professionals."
+            },
+            {
+                id: 21,
+                question: "What is 'diversification' in investing?",
+                options: [
+                    "Putting all money in one investment",
+                    "Spreading investments across different assets to reduce risk",
+                    "Only investing in foreign markets",
+                    "Avoiding all risk"
+                ],
+                correct: 1,
+                explanation: "Diversification reduces risk by spreading investments across various asset classes, sectors, and geographies."
+            },
+            {
+                id: 22,
+                question: "What are gilts?",
+                options: [
+                    "Gold investments",
+                    "UK government bonds",
+                    "Corporate shares",
+                    "Foreign currency"
+                ],
+                correct: 1,
+                explanation: "Gilts are bonds issued by the UK government, considered low-risk investments."
+            },
+            {
+                id: 23,
+                question: "What is a pension?",
+                options: [
+                    "A short-term savings plan",
+                    "A long-term savings vehicle designed to provide income in retirement",
+                    "A type of insurance",
+                    "A current account"
+                ],
+                correct: 1,
+                explanation: "Pensions are tax-efficient long-term savings specifically for retirement income."
+            },
+            {
+                id: 24,
+                question: "What is a Defined Benefit pension scheme?",
+                options: [
+                    "A pension where returns depend on investment performance",
+                    "A scheme promising a specific income based on salary and service",
+                    "A State Pension",
+                    "A savings account"
+                ],
+                correct: 1,
+                explanation: "Defined Benefit (final salary) schemes guarantee income based on earnings and years of service."
+            },
+            {
+                id: 25,
+                question: "What is auto-enrolment?",
+                options: [
+                    "Automatic bank accounts",
+                    "Requirement for employers to enroll eligible employees into a workplace pension",
+                    "Automatic ISA opening",
+                    "Compulsory life insurance"
+                ],
+                correct: 1,
+                explanation: "Auto-enrolment requires employers to automatically enroll eligible workers into a pension scheme with minimum contributions."
+            },
+            {
+                id: 26,
+                question: "What is a mortgage?",
+                options: [
+                    "A type of savings account",
+                    "A secured loan for purchasing property, using the property as collateral",
+                    "An unsecured loan",
+                    "A credit card"
+                ],
+                correct: 1,
+                explanation: "A mortgage is a loan secured against property; lenders can repossess if payments aren't made."
+            },
+            {
+                id: 27,
+                question: "What is 'LTV' in mortgage lending?",
+                options: [
+                    "Long-Term Value",
+                    "Loan-to-Value ratio - the loan amount as a percentage of property value",
+                    "Lending Time Variable",
+                    "Legal Transfer Value"
+                ],
+                correct: 1,
+                explanation: "LTV ratio compares the mortgage amount to the property's value (e.g., £90,000 loan on £100,000 property = 90% LTV)."
+            },
+            {
+                id: 28,
+                question: "What is a fixed-rate mortgage?",
+                options: [
+                    "A mortgage where interest rates can change",
+                    "A mortgage with a guaranteed interest rate for a specific period",
+                    "An interest-only mortgage",
+                    "A flexible mortgage"
+                ],
+                correct: 1,
+                explanation: "Fixed-rate mortgages lock in the interest rate for a set period (e.g., 2, 5, or 10 years)."
+            },
+            {
+                id: 29,
+                question: "What is a tracker mortgage?",
+                options: [
+                    "A fixed-rate mortgage",
+                    "A mortgage that tracks (follows) another rate, usually the Bank of England Base Rate",
+                    "A mortgage for tracking properties",
+                    "An interest-only mortgage"
+                ],
+                correct: 1,
+                explanation: "Tracker mortgages maintain a set margin above or below a specified rate (e.g., Base Rate + 1%)."
+            },
+            {
+                id: 30,
+                question: "What is an affordability assessment?",
+                options: [
+                    "Checking if property is affordable to buy",
+                    "Lender's evaluation of whether a borrower can afford mortgage payments based on income, expenses, and stress testing",
+                    "Valuing the property",
+                    "Checking credit score only"
+                ],
+                correct: 1,
+                explanation: "Affordability assessments examine income, expenditure, and ability to afford payments if rates rise."
+            },
+            {
+                id: 31,
+                question: "What is equity in property?",
+                options: [
+                    "The mortgage amount",
+                    "The difference between the property's value and the outstanding mortgage",
+                    "The interest paid",
+                    "The deposit"
+                ],
+                correct: 1,
+                explanation: "Equity is the portion of the property you own outright (value minus mortgage debt)."
+            },
+            {
+                id: 32,
+                question: "What is remortgaging?",
+                options: [
+                    "Taking a second mortgage",
+                    "Switching your mortgage to a new deal, either with your existing or a new lender",
+                    "Paying off your mortgage",
+                    "Extending your term"
+                ],
+                correct: 1,
+                explanation: "Remortgaging involves replacing your current mortgage with a new one, often to get better rates or release equity."
+            },
+            {
+                id: 33,
+                question: "What is an Early Repayment Charge (ERC)?",
+                options: [
+                    "A monthly fee",
+                    "A penalty fee for paying off or overpaying a mortgage during a fixed/discounted period",
+                    "An arrangement fee",
+                    "A valuation fee"
+                ],
+                correct: 1,
+                explanation: "ERCs are charges applied when borrowers overpay or repay mortgages early, typically during incentive periods."
+            },
+            {
+                id: 34,
+                question: "What is an unsecured loan?",
+                options: [
+                    "A mortgage",
+                    "A loan not backed by collateral, based on creditworthiness",
+                    "A car loan",
+                    "A buy-to-let loan"
+                ],
+                correct: 1,
+                explanation: "Unsecured (personal) loans don't require assets as security; rates depend on credit risk."
+            },
+            {
+                id: 35,
+                question: "What is a credit score?",
+                options: [
+                    "Your bank balance",
+                    "A numerical representation of your creditworthiness based on credit history",
+                    "Your income",
+                    "Your savings amount"
+                ],
+                correct: 1,
+                explanation: "Credit scores assess lending risk based on factors like payment history, credit utilization, and account history."
+            },
+            {
+                id: 36,
+                question: "What is APR most useful for?",
+                options: [
+                    "Comparing savings accounts",
+                    "Comparing the true cost of different loans/credit products",
+                    "Calculating property values",
+                    "Measuring inflation"
+                ],
+                correct: 1,
+                explanation: "APR standardizes costs, making it easier to compare different borrowing options."
+            },
+            {
+                id: 37,
+                question: "What is a credit card?",
+                options: [
+                    "A debit card",
+                    "A payment card allowing you to borrow money up to a credit limit, repaid with interest if not cleared monthly",
+                    "A store voucher",
+                    "A savings card"
+                ],
+                correct: 1,
+                explanation: "Credit cards provide revolving credit; full monthly payment avoids interest, but balances incur charges."
+            },
+            {
+                id: 38,
+                question: "What is debt consolidation?",
+                options: [
+                    "Ignoring debts",
+                    "Combining multiple debts into a single loan, potentially with lower payments or interest",
+                    "Declaring bankruptcy",
+                    "Increasing borrowing"
+                ],
+                correct: 1,
+                explanation: "Debt consolidation simplifies repayment by combining debts, though total cost depends on new terms."
+            },
+            {
+                id: 39,
+                question: "What is life insurance?",
+                options: [
+                    "Health insurance",
+                    "Insurance paying a lump sum or income to beneficiaries upon the policyholder's death",
+                    "Property insurance",
+                    "Car insurance"
+                ],
+                correct: 1,
+                explanation: "Life insurance (life assurance) provides financial protection for dependents after death."
+            },
+            {
+                id: 40,
+                question: "What is term assurance?",
+                options: [
+                    "Permanent life insurance",
+                    "Life insurance covering a specific period; pays out only if death occurs during the term",
+                    "A savings plan",
+                    "An investment product"
+                ],
+                correct: 1,
+                explanation: "Term assurance provides cover for a fixed period (e.g., 10, 20, 25 years) with no payout if you survive."
+            },
+            {
+                id: 41,
+                question: "What is whole-of-life insurance?",
+                options: [
+                    "Cover for a specific term",
+                    "Permanent life insurance that pays out whenever death occurs, as long as premiums are paid",
+                    "Critical illness cover",
+                    "Income protection"
+                ],
+                correct: 1,
+                explanation: "Whole-of-life policies provide lifetime cover (or to a very advanced age) with guaranteed payout."
+            },
+            {
+                id: 42,
+                question: "What is critical illness cover?",
+                options: [
+                    "Life insurance",
+                    "Insurance paying a lump sum upon diagnosis of specified serious illnesses",
+                    "Health insurance",
+                    "Income protection"
+                ],
+                correct: 1,
+                explanation: "Critical illness insurance pays out for conditions like cancer, heart attack, or stroke (as defined in the policy)."
+            },
+            {
+                id: 43,
+                question: "What is income protection insurance?",
+                options: [
+                    "Life insurance",
+                    "Insurance providing regular income if you cannot work due to illness or injury",
+                    "Unemployment benefit",
+                    "Critical illness cover"
+                ],
+                correct: 1,
+                explanation: "Income protection replaces a portion of salary during long-term illness or disability until recovery or retirement."
+            },
+            {
+                id: 44,
+                question: "What is buildings insurance?",
+                options: [
+                    "Contents insurance",
+                    "Insurance covering the structure of your property against damage",
+                    "Life insurance",
+                    "Liability insurance"
+                ],
+                correct: 1,
+                explanation: "Buildings insurance covers the physical structure, fixtures, and fittings against perils like fire, flood, or storm damage."
+            },
+            {
+                id: 45,
+                question: "What is an insurance excess?",
+                options: [
+                    "The premium",
+                    "The amount you must pay towards a claim before the insurer pays the remainder",
+                    "Extra cover",
+                    "The policy limit"
+                ],
+                correct: 1,
+                explanation: "Excesses are the policyholder's contribution to claims; higher excesses typically mean lower premiums."
+            },
+            {
+                id: 46,
+                question: "What is inflation?",
+                options: [
+                    "The rate of economic growth",
+                    "The rate at which the general level of prices for goods and services rises",
+                    "The unemployment rate",
+                    "The interest rate"
+                ],
+                correct: 1,
+                explanation: "Inflation measures the percentage increase in the price level over time, reducing purchasing power."
+            },
+            {
+                id: 47,
+                question: "What is the UK's inflation target set by the government?",
+                options: [
+                    "1%",
+                    "2%",
+                    "3%",
+                    "5%"
+                ],
+                correct: 1,
+                explanation: "The Bank of England's Monetary Policy Committee aims to keep CPI inflation at 2%."
+            },
+            {
+                id: 48,
+                question: "What does GDP stand for?",
+                options: [
+                    "Government Debt Product",
+                    "Gross Domestic Product - the total value of goods and services produced in an economy",
+                    "General Development Plan",
+                    "Government Development Program"
+                ],
+                correct: 1,
+                explanation: "GDP measures economic output and is the primary indicator of economic growth."
+            },
+            {
+                id: 49,
+                question: "What is a recession?",
+                options: [
+                    "One quarter of negative GDP growth",
+                    "Two consecutive quarters of negative GDP growth",
+                    "Rising unemployment",
+                    "High inflation"
+                ],
+                correct: 1,
+                explanation: "A recession is technically defined as two consecutive quarters of falling GDP."
+            },
+            {
+                id: 50,
+                question: "How does the Bank of England primarily control inflation?",
+                options: [
+                    "By setting tax rates",
+                    "By adjusting the Base Rate to influence borrowing and spending",
+                    "By printing money",
+                    "By setting prices"
+                ],
+                correct: 1,
+                explanation: "The MPC uses interest rates to influence economic activity and control inflation."
+            }
+        ];
+
+        const MockExam = () => {
+            const [examQuestions, setExamQuestions] = useState([]);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showExplanation, setShowExplanation] = useState(false);
+            const [score, setScore] = useState(0);
+            const [answers, setAnswers] = useState([]);
+            const [examComplete, setExamComplete] = useState(false);
+            const [timeElapsed, setTimeElapsed] = useState(0);
+            const [isRunning, setIsRunning] = useState(true);
+
+            const shuffleQuestions = () => {
+                const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+                return shuffled.slice(0, 50);
+            };
+
+            useEffect(() => {
+                setExamQuestions(shuffleQuestions());
+            }, []);
+
+            useEffect(() => {
+                let interval;
+                if (isRunning && !examComplete && examQuestions.length > 0) {
+                    interval = setInterval(() => {
+                        setTimeElapsed(prev => prev + 1);
+                    }, 1000);
+                }
+                return () => clearInterval(interval);
+            }, [isRunning, examComplete, examQuestions]);
+
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            };
+
+            const handleAnswerSelect = (index) => {
+                if (showExplanation) return;
+                setSelectedAnswer(index);
+            };
+
+            const handleSubmitAnswer = () => {
+                if (selectedAnswer === null) return;
+                
+                setShowExplanation(true);
+                const isCorrect = selectedAnswer === examQuestions[currentQuestion].correct;
+                
+                const newAnswers = [...answers];
+                newAnswers[currentQuestion] = {
+                    selected: selectedAnswer,
+                    correct: examQuestions[currentQuestion].correct,
+                    isCorrect
+                };
+                setAnswers(newAnswers);
+                
+                if (isCorrect) {
+                    setScore(score + 1);
+                }
+            };
+
+            const handleNext = () => {
+                if (currentQuestion < examQuestions.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                    setSelectedAnswer(answers[currentQuestion + 1]?.selected ?? null);
+                    setShowExplanation(answers[currentQuestion + 1] !== undefined);
+                } else {
+                    setExamComplete(true);
+                    setIsRunning(false);
+                }
+            };
+
+            const handlePrevious = () => {
+                if (currentQuestion > 0) {
+                    setCurrentQuestion(currentQuestion - 1);
+                    setSelectedAnswer(answers[currentQuestion - 1]?.selected ?? null);
+                    setShowExplanation(answers[currentQuestion - 1] !== undefined);
+                }
+            };
+
+            const handleRestart = () => {
+                setExamQuestions(shuffleQuestions());
+                setCurrentQuestion(0);
+                setSelectedAnswer(null);
+                setShowExplanation(false);
+                setScore(0);
+                setAnswers([]);
+                setExamComplete(false);
+                setTimeElapsed(0);
+                setIsRunning(true);
+            };
+
+            const getScorePercentage = () => {
+                return Math.round((score / examQuestions.length) * 100);
+            };
+
+            const getGrade = () => {
+                const percentage = getScorePercentage();
+                if (percentage >= 80) return { grade: 'Excellent', color: 'text-green-600', bg: 'bg-green-50' };
+                if (percentage >= 70) return { grade: 'Pass', color: 'text-blue-600', bg: 'bg-blue-50' };
+                if (percentage >= 60) return { grade: 'Borderline', color: 'text-yellow-600', bg: 'bg-yellow-50' };
+                return { grade: 'Needs Improvement', color: 'text-red-600', bg: 'bg-red-50' };
+            };
+
+            if (examQuestions.length === 0) {
+                return (
+                    <div className="container">
+                        <div className="max-w-4xl mx-auto p-6 flex items-center justify-center min-h-screen">
+                            <div className="text-center bg-white rounded-lg shadow-lg p-8">
+                                <Shuffle className="w-12 h-12 mx-auto mb-4 text-blue-600 animate-spin" />
+                                <p className="text-gray-600 text-lg">Preparing your exam questions...</p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (examComplete) {
+                const gradeInfo = getGrade();
+                return (
+                    <div className="container">
+                        <div className="max-w-4xl mx-auto p-6">
+                            <div className="bg-white rounded-lg shadow-lg p-8">
+                                <div className="text-center mb-8">
+                                    <Award className="w-16 h-16 mx-auto mb-4 text-yellow-500" />
+                                    <h2 className="text-3xl font-bold mb-2">Exam Complete!</h2>
+                                    <p className="text-gray-600">Here are your results</p>
+                                </div>
+
+                                <div className={`${gradeInfo.bg} rounded-lg p-6 mb-6`}>
+                                    <div className="text-center">
+                                        <div className={`text-5xl font-bold mb-2 ${gradeInfo.color}`}>{score}/{examQuestions.length}</div>
+                                        <div className={`text-2xl font-semibold ${gradeInfo.color} mb-2`}>{getScorePercentage()}%</div>
+                                        <div className={`text-xl ${gradeInfo.color}`}>{gradeInfo.grade}</div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4 mb-6">
+                                    <div className="bg-gray-50 rounded-lg p-4 text-center">
+                                        <div className="text-sm text-gray-600 mb-1">Time Taken</div>
+                                        <div className="text-2xl font-bold">{formatTime(timeElapsed)}</div>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-lg p-4 text-center">
+                                        <div className="text-sm text-gray-600 mb-1">Correct Answers</div>
+                                        <div className="text-2xl font-bold text-green-600">{score}</div>
+                                    </div>
+                                </div>
+
+                                <div className="mb-6">
+                                    <h3 className="font-semibold text-lg mb-3">Question Review</h3>
+                                    <div className="grid grid-cols-10 gap-2">
+                                        {answers.map((answer, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => {
+                                                    setCurrentQuestion(idx);
+                                                    setExamComplete(false);
+                                                }}
+                                                className={`p-2 rounded text-sm font-medium ${
+                                                    answer.isCorrect 
+                                                        ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                                                        : 'bg-red-100 text-red-700 hover:bg-red-200'
+                                                }`}
+                                            >
+                                                {idx + 1}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleRestart}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition"
+                                >
+                                    <Shuffle className="w-5 h-5" />
+                                    New Random Exam (50 Questions)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            const question = examQuestions[currentQuestion];
+
+            return (
+                <div className="container">
+                    <div className="max-w-4xl mx-auto p-6">
+                        <div className="bg-white rounded-lg shadow-lg p-6 mb-4">
+                            <div className="flex justify-between items-center mb-6 flex-wrap gap-2">
+                                <div className="flex items-center gap-2">
+                                    <Clock className="w-5 h-5 text-gray-600" />
+                                    <span className="font-semibold">{formatTime(timeElapsed)}</span>
+                                </div>
+                                <div className="text-sm font-medium text-gray-600">
+                                    Question {currentQuestion + 1} of {examQuestions.length}
+                                </div>
+                                <div className="text-sm font-medium">
+                                    Score: <span className="text-blue-600">{score}/{examQuestions.length}</span>
+                                </div>
+                            </div>
+
+                            <div className="mb-4">
+                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                    <div 
+                                        className="bg-blue-600 h-2 rounded-full transition-all"
+                                        style={{ width: `${((currentQuestion + 1) / examQuestions.length) * 100}%` }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mb-6">
+                                <h3 className="text-xl font-semibold mb-4">{question.question}</h3>
+                                
+                                <div className="space-y-3">
+                                    {question.options.map((option, index) => {
+                                        const isSelected = selectedAnswer === index;
+                                        const isCorrect = index === question.correct;
+                                        const showCorrect = showExplanation && isCorrect;
+                                        const showIncorrect = showExplanation && isSelected && !isCorrect;
+
+                                        return (
+                                            <button
+                                                key={index}
+                                                onClick={() => handleAnswerSelect(index)}
+                                                disabled={showExplanation}
+                                                className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                                                    showCorrect
+                                                        ? 'border-green-500 bg-green-50'
+                                                        : showIncorrect
+                                                        ? 'border-red-500 bg-red-50'
+                                                        : isSelected
+                                                        ? 'border-blue-500 bg-blue-50'
+                                                        : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                                                } ${showExplanation ? 'cursor-default' : 'cursor-pointer'}`}
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <span className="flex-1">{option}</span>
+                                                    {showCorrect && <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 ml-2" />}
+                                                    {showIncorrect && <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 ml-2" />}
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {showExplanation && (
+                                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-blue-900">Explanation:</h4>
+                                    <p className="text-blue-800">{question.explanation}</p>
+                                </div>
+                            )}
+
+                            <div className="flex gap-3 flex-wrap">
+                                <button
+                                    onClick={handlePrevious}
+                                    disabled={currentQuestion === 0}
+                                    className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Previous
+                                </button>
+                                
+                                {!showExplanation ? (
+                                    <button
+                                        onClick={handleSubmitAnswer}
+                                        disabled={selectedAnswer === null}
+                                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                    >
+                                        Submit Answer
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleNext}
+                                        className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition"
+                                    >
+                                        {currentQuestion < examQuestions.length - 1 ? 'Next Question' : 'Finish Exam'}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<MockExam />);
+    </script>
+</body>
+</html>
